@@ -14,7 +14,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# lib/  //flutter에서 lib폴더 업로드 필요합니다.
 lib64/
 parts/
 sdist/
