@@ -16,7 +16,7 @@ class App extends GetView<BottomNavController> {
       child: Obx(
         () => Scaffold(
           // backgroundColor: Colors.red,
-          appBar: AppBar(),
+          // appBar: AppBar(),
           body: IndexedStack(
             index: controller.pageIndex.value,
             // children: [Home(), Recruiting(), QnA(), Sharing()],

@@ -1,8 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:frontend/src/components/image_data.dart';
+// import 'package:frontend/src/components/image_data.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({Key? key}) : super(key: key);
@@ -46,7 +43,7 @@ class _MyPageState extends State<MyPage> with TickerProviderStateMixin {
           // mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 15, 20),
+              padding: const EdgeInsets.fromLTRB(20, 50, 15, 20),
               child: CircleAvatar(
                 radius: 50,
                 backgroundImage: AssetImage('assets/images/profile.png'),
@@ -57,7 +54,7 @@ class _MyPageState extends State<MyPage> with TickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 15, top: 20),
+                    padding: const EdgeInsets.only(left: 15, top: 50),
                     child: Text(
                       'UserName',
                       style: TextStyle(
@@ -99,22 +96,22 @@ class _MyPageState extends State<MyPage> with TickerProviderStateMixin {
         tabs: [
           Container(
             // color: Colors.red,
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.only(top: 45, bottom: 5),
             child: Text(
               "My Teams",
               style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 23,
                   fontWeight: FontWeight.bold),
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.only(top: 45, bottom: 5),
             child: Text(
               "Point Shop",
               style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 23,
                   fontWeight: FontWeight.bold),
             ),
           ),
