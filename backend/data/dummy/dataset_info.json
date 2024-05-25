@@ -1,0 +1,50 @@
+{
+  "builder_name": "csv",
+  "citation": "",
+  "config_name": "default",
+  "dataset_name": "csv",
+  "dataset_size": 5946,
+  "description": "",
+  "download_checksums": {
+    "C:/Users/user/OneDrive - \uc131\uade0\uad00\ub300\ud559\uad50/\ubc14\ud0d5 \ud654\uba74/\uae40\uc885\ud6a8/SE/Project/data/test_dataset.csv": {
+      "num_bytes": 5883,
+      "checksum": null
+    }
+  },
+  "download_size": 5883,
+  "features": {
+    "id": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "text": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "train": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "__index__": {
+      "dtype": "int64",
+      "_type": "Value"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "size_in_bytes": 11829,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 5946,
+      "num_examples": 9,
+      "dataset_name": "csv"
+    }
+  },
+  "version": {
+    "version_str": "0.0.0",
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}
