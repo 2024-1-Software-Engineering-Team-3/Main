@@ -34,7 +34,7 @@ def check_not_duplicate():
         "--name", "gl",
         "--split", "train",
         "--cache_dir", "./cache",
-        "--output", "data/dummy",
+        "--output", "../data/dummy",
         "--column", "text",
         "--batch_size", "10000",
         "--use_auth_token", "true",
