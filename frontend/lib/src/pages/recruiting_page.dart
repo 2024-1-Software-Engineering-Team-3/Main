@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:get/get.dart';
 import '../components/recruiting_post_widget.dart';
+import 'create_team_page.dart';
 
 class RecruitingPage extends StatefulWidget {
   const RecruitingPage({Key? key}) : super(key: key);
-  
+
   @override
   State<RecruitingPage> createState() => _RecruitingPageState();
 }
@@ -12,19 +16,29 @@ class _RecruitingPageState extends State<RecruitingPage>
     with TickerProviderStateMixin {
   late TabController tabController2;
   int selectedTabIndex = 0;
-  List<RecruitingPost> posts = [
-    RecruitingPost(title: 'Title 1', content: 'Document: This is Document. in here, user can write their own description.', available: 3, type: 'Tutoring', userName: 'UserName1'),
-    RecruitingPost(title: 'Title 2', content: 'Document: This is Document. in here, user can write their own description.', available: 3, type: 'Tutoring', userName: 'UserName2'),
-    RecruitingPost(title: 'Title 3', content: 'Document: This is Document. in here, user can write their own description.', available: 3, type: 'Tutoring', userName: 'UserName3'),
-    RecruitingPost(title: 'Title 4', content: 'Document: This is Document. in here, user can write their own description.', available: 2, type: 'Mentoring', userName: 'UserName1'),
-    RecruitingPost(title: 'Title 5', content: 'Document: This is Document. in here, user can write their own description.', available: 2, type: 'Mentoring', userName: 'UserName2'),
-    // 다른 게시물들 추가
-  ];
+  List<RecruitingPost> posts = [];
 
   @override
   void initState() {
     super.initState();
     tabController2 = TabController(length: 2, vsync: this);
+    _loadPosts();
+  }
+
+  Future<void> _loadPosts() async {
+    final String response =
+        await rootBundle.loadString('assets/test_json/posts.json');
+    final List<dynamic> data = json.decode(response);
+    setState(() {
+      posts = data
+          .map((post) => RecruitingPost(
+              title: post['title'],
+              content: post['content'],
+              available: post['available'],
+              type: post['type'],
+              userName: post['userName']))
+          .toList();
+    });
   }
 
   @override
@@ -56,55 +70,67 @@ class _RecruitingPageState extends State<RecruitingPage>
               Container(
                 width: 300,
                 child: TabBar(
-                    labelPadding: EdgeInsets.only(right: 40),
-                    
-                    controller: tabController2,
-                    dividerColor: Colors.transparent,
-                    indicator: BoxDecoration(),
+                  labelPadding: EdgeInsets.only(right: 40),
+                  controller: tabController2,
+                  dividerColor: Colors.transparent,
+                  indicator: BoxDecoration(),
                   onTap: (index) {
                     setState(() {
                       selectedTabIndex = index;
                     });
                   },
-                    tabs: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-                        decoration: BoxDecoration(
-                          color: selectedTabIndex == 0 ? Colors.white : Color(0xFF4BC27B),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: selectedTabIndex == 0 ? Colors.black : Colors.white,
-                            width: 2,
-                          ),
-                        ),
-                        child: Text(
-                          "Tutoring",
-                          style: TextStyle(
-                              color: selectedTabIndex == 0 ? Colors.black : Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
+                  tabs: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 20),
+                      decoration: BoxDecoration(
+                        color: selectedTabIndex == 0
+                            ? Colors.white
+                            : Color(0xFF4BC27B),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: selectedTabIndex == 0
+                              ? Colors.black
+                              : Colors.white,
+                          width: 2,
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-                        decoration: BoxDecoration(
-                          color: selectedTabIndex == 1 ? Colors.white : Color(0xFF4BC27B),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: selectedTabIndex == 1 ? Colors.black : Colors.white,
-                            width: 2,
-                          ),
-                        ),
-                        child: Text(
-                          "Mentoring",
-                          style: TextStyle(
-                              color: selectedTabIndex == 1 ? Colors.black : Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
+                      child: Text(
+                        "Tutoring",
+                        style: TextStyle(
+                            color: selectedTabIndex == 0
+                                ? Colors.black
+                                : Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 20),
+                      decoration: BoxDecoration(
+                        color: selectedTabIndex == 1
+                            ? Colors.white
+                            : Color(0xFF4BC27B),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: selectedTabIndex == 1
+                              ? Colors.black
+                              : Colors.white,
+                          width: 2,
                         ),
                       ),
-                    ],
-                  
+                      child: Text(
+                        "Mentoring",
+                        style: TextStyle(
+                            color: selectedTabIndex == 1
+                                ? Colors.black
+                                : Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               GestureDetector(
@@ -133,9 +159,9 @@ class _RecruitingPageState extends State<RecruitingPage>
       filteredPosts = posts.where((post) => post.type == 'Mentoring').toList();
     }
     return Column(
-      // children: List.generate(50, (index) => RecruitingPostWidget()).toList(),
-      children: filteredPosts.map((post) => RecruitingPostWidget(post: post)).toList(),
-      
+      children: filteredPosts
+          .map((post) => RecruitingPostWidget(post: post))
+          .toList(),
     );
   }
 
@@ -165,27 +191,41 @@ class _RecruitingPageState extends State<RecruitingPage>
                         fontWeight: FontWeight.bold)),
               ),
             ),
-            SizedBox(
-              height: 2,
-            ),
-            Container(
-              width: 350,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Color(0xFF615D5D),
-                // borderRadius: BorderRadius.circular(20),
+            SizedBox(height: 2),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+                Get.to(() => CreateTeamPage())!.then((newPosts) {
+                  if (newPosts != null) {
+                    setState(() {
+                      posts = newPosts
+                          .map<RecruitingPost>((post) => RecruitingPost(
+                              title: post['title'],
+                              content: post['content'],
+                              available: post['available'],
+                              type: post['type'],
+                              userName: post['userName']))
+                          .toList();
+                    });
+                  }
+                });
+              },
+              child: Container(
+                width: 350,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Color(0xFF615D5D),
+                ),
+                child: Center(
+                  child: Text('Create New Team',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold)),
+                ),
               ),
-              child: Center(
-                child: Text('Create New Team',
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold)),
-              ),
             ),
-            SizedBox(
-              height: 2,
-            ),
+            SizedBox(height: 2),
             Container(
               width: 350,
               padding: const EdgeInsets.all(10),
@@ -204,9 +244,7 @@ class _RecruitingPageState extends State<RecruitingPage>
                         fontWeight: FontWeight.bold)),
               ),
             ),
-            SizedBox(
-              height: 15,
-            ),
+            SizedBox(height: 15),
             GestureDetector(
               onTap: () {
                 Navigator.pop(context);
@@ -232,6 +270,4 @@ class _RecruitingPageState extends State<RecruitingPage>
       ),
     );
   }
-
-
 }
