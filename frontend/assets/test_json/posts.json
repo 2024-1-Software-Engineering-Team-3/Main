@@ -1,0 +1,38 @@
+[
+    {
+      "title": "Example Title 1",
+      "content": "Example content for the new team 1.",
+      "available": 3,
+      "type": "Tutoring",
+      "userName": "UserName1"
+    },
+    {
+      "title": "Example Title 2",
+      "content": "Example content for the new team 2.",
+      "available": 3,
+      "type": "Tutoring",
+      "userName": "UserName2"
+    },
+    {
+      "title": "Example Title 3",
+      "content": "Example content for the new team 3.",
+      "available": 2,
+      "type": "Mentoring",
+      "userName": "UserName3"
+    },
+    {
+      "title": "Example Title 4",
+      "content": "Example content for the new team 4.",
+      "available": 2,
+      "type": "Mentoring",
+      "userName": "UserName4"
+    },
+    {
+      "title": "Example Title 5",
+      "content": "Example content for the new team 5.",
+      "available": 1,
+      "type": "Mentoring",
+      "userName": "UserName5"
+    }
+  ]
+  
