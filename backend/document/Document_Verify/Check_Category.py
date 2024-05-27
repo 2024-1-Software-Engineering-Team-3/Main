@@ -1,8 +1,8 @@
 from openai import OpenAI
 from typing import List, Tuple
-import env
 
 client = OpenAI()
+
 
 def API_check_category(ocr_text: str, document_description: str) -> Tuple[bool, List[str]]:
     """
@@ -15,13 +15,13 @@ def API_check_category(ocr_text: str, document_description: str) -> Tuple[bool, 
     try:
         messages = [
             {"role": "system", "content": "You are a helpful assistant. Prompt Can Be Korean, but You should speak English Only."},
-            {"role": "user", "content": f"The following is the OCR text from a document. (It is a bit noisy):\n{ocr_text}"},
+            {"role": "user",
+                "content": f"The following is the OCR text from a document. (It is a bit noisy):\n{ocr_text}"},
             {"role": "user", "content": f"Does the general topic of this text match the following description?\n{document_description}"},
             {"role": "user", "content": "Please answer with 'yes' or 'no' and provide categories of the document if available.\n \
                                         When writing categories, you should write in the format: \"Categories: apple, banana, tree\"."}
-                    ]
+        ]
 
-        
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages,
@@ -49,6 +49,7 @@ def API_check_category(ocr_text: str, document_description: str) -> Tuple[bool, 
         print(f"An error occurred: {e}")
         return (-1, [])
 
+
 def extract_categories(text: str) -> List[str]:
     """
     Helper function to extract categories from the GPT response text.
@@ -61,8 +62,7 @@ def extract_categories(text: str) -> List[str]:
     return categories
 
 
-
-if __name__=="__main__":
+if __name__ == "__main__":
     ocr_text = """
     Workplace Safety Protocols
 
