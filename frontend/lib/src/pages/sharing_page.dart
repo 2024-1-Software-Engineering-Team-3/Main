@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:frontend/src/components/sharing_post_widget.dart';
 import 'package:frontend/src/pages/create_sharing_page.dart';
 import 'package:get/get.dart';
-import '../components/post_widget.dart';
+import '../models/sharing_post.dart';
 
 class SharingPage extends StatefulWidget {
   const SharingPage({Key? key}) : super(key: key);
@@ -26,14 +27,7 @@ class _SharingPageState extends State<SharingPage> {
         await rootBundle.loadString('assets/test_json/sharing_posts.json');
     final List<dynamic> data = json.decode(response);
     setState(() {
-      posts = data
-          .map((post) => Post(
-                id: post['id'],
-                title: post['title'],
-                content: post['content'],
-                point: post['point'],
-              ))
-          .toList();
+      posts = data.map((post) => Post.fromJson(post)).toList();
     });
   }
 
@@ -107,12 +101,8 @@ class _SharingPageState extends State<SharingPage> {
                                 if (newPosts != null) {
                                   setState(() {
                                     posts = newPosts
-                                        .map<Post>((post) => Post(
-                                              id: post['id'],
-                                              title: post['title'],
-                                              content: post['content'],
-                                              point: post['point'],
-                                            ))
+                                        .map<Post>(
+                                            (post) => Post.fromJson(post))
                                         .toList();
                                   });
                                 }
@@ -229,7 +219,7 @@ class _SharingPageState extends State<SharingPage> {
 
   Widget _postList() {
     return Column(
-      children: posts.map((post) => PostWidget(post: post)).toList(),
+      children: posts.map((post) => SharingPostWidget(post: post)).toList(),
     );
   }
 

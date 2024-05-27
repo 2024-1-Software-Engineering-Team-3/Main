@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:get/get.dart';
-import '../components/post_widget.dart';
-// import '../models/post.dart';
+import '../components/qna_post_widget.dart';
+import '../models/qna_post.dart';
 import 'create_question_page.dart';
 
 class QnAPage extends StatefulWidget {
@@ -27,14 +27,7 @@ class _QnAPageState extends State<QnAPage> {
         await rootBundle.loadString('assets/test_json/qna_posts.json');
     final List<dynamic> data = json.decode(response);
     setState(() {
-      posts = data
-          .map((post) => Post(
-                id: post['id'],
-                title: post['title'],
-                content: post['content'],
-                point: post['point'],
-              ))
-          .toList();
+      posts = data.map((post) => Post.fromJson(post)).toList();
     });
   }
 
@@ -106,12 +99,8 @@ class _QnAPageState extends State<QnAPage> {
                                 if (newPosts != null) {
                                   setState(() {
                                     posts = newPosts
-                                        .map<Post>((post) => Post(
-                                              id: post['id'],
-                                              title: post['title'],
-                                              content: post['content'],
-                                              point: post['point'],
-                                            ))
+                                        .map<Post>(
+                                            (post) => Post.fromJson(post))
                                         .toList();
                                   });
                                 }
@@ -224,7 +213,7 @@ class _QnAPageState extends State<QnAPage> {
 
   Widget _postList() {
     return Column(
-      children: posts.map((post) => PostWidget(post: post)).toList(),
+      children: posts.map((post) => QnAPostWidget(post: post)).toList(),
     );
   }
 
