@@ -12,17 +12,17 @@ def register():
     email = data.get('email')
 
     if not username or not email or not password:
-        return jsonify({'msg': '아이디 또는 이메일, 패스워드가 필요합니다.'}), 400
+        return jsonify({'Response': '아이디 또는 이메일, 패스워드가 필요합니다.'}), 400
 
     if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
-        return jsonify({'msg': '사용자 이름 또는 이메일이 존재합니다.'}), 400
+        return jsonify({'Response': '사용자 이름 또는 이메일이 존재합니다.'}), 400
 
     new_user = User(username=username, email=email)
     new_user.set_password(password)
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'msg': '회원가입이 성공적으로 완료되었습니다.'}), 201
+    return jsonify({'Response': '회원가입이 성공적으로 완료되었습니다.'}), 201
 
 
 @auth_bp.route('/login', methods=['POST'])
@@ -36,12 +36,12 @@ def login():
     if user and user.check_password(password):
         access_token = create_access_token(
             identity={'username': user.username, 'email': user.email})
-        return jsonify(access_token=access_token), 200
+        return jsonify(user_info={'email': email, 'username': user.username}, access_token=access_token), 200
 
-    return jsonify({'msg': '잘못된 이메일 또는 패스워드 입니다.'}), 401
+    return jsonify({'Response': '잘못된 이메일 또는 패스워드 입니다.'}), 401
 
 
 @auth_bp.route('/protected', methods=['GET'])
 @jwt_required()
 def protected():
-    return jsonify({"msg": "보호받는 route입니다."}), 200
+    return jsonify({"Response": "보호받는 route입니다."}), 200

@@ -15,3 +15,24 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+class RecruitingData(db.Model):
+    __tablename__ = 'recruiting_data'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    membercount = db.Column(db.Integer, nullable=False)
+    duration = db.Column(db.String, nullable=False)
+    place = db.Column(db.String(255), nullable=True)
+    type = db.Column(db.String(50), nullable=False)
+
+
+class RecruitmentMember(db.Model):
+    __tablename__ = "recruitment_member"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.String(255), nullable=False)
+    recruitment_id = db.Column(db.Integer, db.ForeignKey(
+        'recruiting_data.id'), nullable=False)
+    recruitment = db.relationship(
+        "RecruitingData", backref=db.backref('members', lazy=True))
