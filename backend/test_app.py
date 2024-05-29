@@ -60,6 +60,42 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn("성공적으로 리크루먼트에 가입했습니다.", response.get_json()['Response'])
 
+    def test_create_qa(self):
+        self.test_login_user()
+        response = self.client.post('/QA/upload', json={
+            "title": "new title",
+            "content": "This is a content",
+            "user_id": 1,
+            "point": 10,
+            "answered": False
+        })
+        self.assertEqual(response.status_code, 201)
+        data = response.get_json()
+        self.assertEqual(data['Response'], 'QA entry가 성공적으로 생성되었습니다.')
+
+        with self.app.app_context():
+            qa_entry = QAEntry.query.filter_by(id=data['id']).first()
+            self.assertIsNotNone(qa_entry)
+            self.assertEqual(qa_entry.title, 'new title')
+            self.assertEqual(qa_entry.content, 'This is a content')
+            self.assertEqual(qa_entry.user_id, 1)
+            self.assertEqual(qa_entry.point, 10)
+            self.assertFalse(qa_entry.answered)
+
+    def test_get_qa(self):
+        self.test_create_qa()
+        response = self.client.get('/QA/home')
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(data['Response'], 'Success')
+        self.assertEqual(len(data['Questions']), 1)
+        self.assertEqual(data['Questions'][0]['title'], 'new title')
+        self.assertEqual(data['Questions'][0]['content'], 'This is a content')
+        self.assertEqual(data['Questions'][0]['userid'], 1)
+        self.assertEqual(data['Questions'][0]['username'], 'testuser')
+        self.assertEqual(data['Questions'][0]['point'], 10)
+        self.assertEqual(data['Questions'][0]['answered'], False)
+
 
 if __name__ == '__main__':
     unittest.main()

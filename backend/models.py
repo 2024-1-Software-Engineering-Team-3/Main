@@ -1,11 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from datetime import datetime
 db = SQLAlchemy()
 
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
@@ -36,3 +36,17 @@ class RecruitmentMember(db.Model):
         'recruiting_data.id'), nullable=False)
     recruitment = db.relationship(
         "RecruitingData", backref=db.backref('members', lazy=True))
+
+
+class QAEntry(db.Model):
+    __tablename__ = 'qa_entries'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.Text, nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    date_created = db.Column(
+        db.DateTime, nullable=False, default=datetime.now())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    point = db.Column(db.Integer, nullable=False, default=0)
+    answered = db.Column(db.Boolean, nullable=False, default=False)
+
+    user = db.relationship('User', backref=db.backref('qa_entries', lazy=True))
