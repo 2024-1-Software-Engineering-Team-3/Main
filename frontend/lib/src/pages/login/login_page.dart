@@ -55,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
         data['shares'],
         data['reply'],
         data['likes'],
+        data['point'],
       );
       Get.off(() => const App());
     } else {

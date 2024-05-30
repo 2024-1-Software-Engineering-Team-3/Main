@@ -1,9 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:frontend/src/controller/user_controller.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:get/get.dart';
-import 'recruiting_page.dart';
+import 'package:frontend/src/controller/user_controller.dart';
 
 class CreateTeamPage extends StatefulWidget {
   const CreateTeamPage({Key? key}) : super(key: key);
@@ -15,9 +15,7 @@ class CreateTeamPage extends StatefulWidget {
 class _CreateTeamPageState extends State<CreateTeamPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
-  final TextEditingController _scheduleController = TextEditingController();
   String? _type = 'Tutoring';
-  final List<String> _types = ['Tutoring', 'Mentoring'];
   final UserController userController = Get.find<UserController>();
   final List<ScheduleItem> _schedules = [];
 
@@ -26,23 +24,32 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       'title': _titleController.text,
       'content': _contentController.text,
       'available': 5,
-      'type': _type ?? 'Tutoring', // Default to 'Tutoring' if null
-      'schedule': _schedules.map((schedule) => schedule.toJson()).toList(),
-      'userName': userController.username,
+      'type': _type ?? 'Tutoring',
+      'userName': userController.username.value, // RxString을 일반 문자열로 변환
     };
 
     _saveNewPost(newPost);
   }
 
   Future<void> _saveNewPost(Map<String, dynamic> newPost) async {
-    final String response =
-        await rootBundle.loadString('assets/test_json/posts.json');
-    List<dynamic> data = json.decode(response);
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/team_posts.json';
+
+    File file = File(path);
+
+    // 파일이 존재하지 않으면 새로 생성
+    // if (!await file.exists()) {
+    //   await file.create(recursive: true);
+    //   await file.writeAsString(json.encode([])); // 빈 배열을 기본값으로 작성
+    // }
+
+    String fileContent = await file.readAsString();
+    List<dynamic> data = json.decode(fileContent);
     data.add(newPost);
 
-    // 이후, 서버에 저장하거나 로컬 스토리지에 저장하는 로직을 구현할 수 있습니다.
-    // 예시: Get.back() 호출하여 이전 페이지로 돌아가고 새로운 게시물을 추가합니다.
-    Get.back(result: data);
+    await file.writeAsString(json.encode(data));
+
+    Get.back(result: newPost);
   }
 
   void _addSchedule() {
@@ -260,7 +267,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                   borderSide: BorderSide.none,
                 ),
               ),
-              maxLines: null, // 여러 줄 입력이 가능하도록 설정
+              maxLines: null,
             ),
             const SizedBox(height: 20),
             Align(
@@ -321,9 +328,9 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                     backgroundColor: const Color(0xFF4BC27B),
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // 둥근 모서리 설정
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    minimumSize: const Size(300, 50), // 최소 크기 설정
+                    minimumSize: const Size(300, 50),
                   ),
                 ),
               ),
@@ -341,10 +348,4 @@ class ScheduleItem {
   TimeOfDay? toTime;
 
   ScheduleItem({this.day, this.fromTime, this.toTime});
-
-  Map<String, dynamic> toJson() => {
-        'day': day,
-        'fromTime': fromTime != null ? fromTime!.format(Get.context!) : null,
-        'toTime': toTime != null ? toTime!.format(Get.context!) : null,
-      };
 }

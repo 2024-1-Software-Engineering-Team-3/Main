@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:frontend/src/models/recruiting_post.dart';
 import 'package:get/get.dart';
-import '../components/recruiting_post_widget.dart';
+import '../../components/recruiting_post_widget.dart';
 import 'create_team_page.dart';
 
 class RecruitingPage extends StatefulWidget {
@@ -27,16 +28,18 @@ class _RecruitingPageState extends State<RecruitingPage>
 
   Future<void> _loadPosts() async {
     final String response =
-        await rootBundle.loadString('assets/test_json/posts.json');
+        await rootBundle.loadString('assets/test_json/team_posts.json');
     final List<dynamic> data = json.decode(response);
     setState(() {
+      // posts = data.map((post) => RecruitingPost.fromJson(post)).toList();
       posts = data
           .map((post) => RecruitingPost(
               title: post['title'],
               content: post['content'],
               available: post['available'],
               type: post['type'],
-              userName: post['userName']))
+              userName: post['userName'],
+              imageUrl: post['imageUrl']))
           .toList();
     });
   }
@@ -195,17 +198,16 @@ class _RecruitingPageState extends State<RecruitingPage>
             GestureDetector(
               onTap: () {
                 Navigator.pop(context);
-                Get.to(() => CreateTeamPage())!.then((newPosts) {
-                  if (newPosts != null) {
+                Get.to(() => CreateTeamPage())!.then((newPost) {
+                  if (newPost != null) {
                     setState(() {
-                      posts = newPosts
-                          .map<RecruitingPost>((post) => RecruitingPost(
-                              title: post['title'],
-                              content: post['content'],
-                              available: post['available'],
-                              type: post['type'],
-                              userName: post['userName']))
-                          .toList();
+                      posts.add(RecruitingPost(
+                          title: newPost['title'],
+                          content: newPost['content'],
+                          available: newPost['available'],
+                          type: newPost['type'],
+                          userName: newPost['userName'],
+                          imageUrl: newPost['imageUrl']));
                     });
                   }
                 });

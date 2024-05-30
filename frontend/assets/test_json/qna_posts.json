@@ -1,31 +1,27 @@
 [
   {
     "id": 1,
-    "title": "도저히 모르겠어요1",
-    "content": "어떻게 해야하나요 이거??\n어떻게 해야 이 문제를 해결할 수 있을까요?\n도와주세요!",
+    "title": "About Probability",
+    "content": "How do you calculate the probability of an event occurring?",
     "point": 50,
-    "imageUrl": "assets/test_img/qna_test2_img.png",
+    "imageUrl": "assets/images/qna_img1.png",
     "comments": [
       {
         "author": "홍길동/전자전기공학부",
-        "content": "x = 14입니다"
+        "content": "It is easy! x is 12"
       },
       {
-        "author": "김민수/전자전기공학부",
-        "content": "ㄴㄴ 12입니다"
-      },
-      {
-        "author": "박철수/소프트웨어학부",
-        "content": "x는 16일 가능성이 높습니다. 수식을 다시 확인해 보세요."
+        "author": "Olivia/Mathematics",
+        "content": "no, X is 14. I'm good at math!"
       }
     ]
   },
   {
     "id": 2,
-    "title": "도저히 모르겠어요2 ㅠㅠ",
-    "content": "어떻게 해야하나요 이거??!!!\n정말 모르겠어요.\n방법을 알려주시면 감사하겠습니다.",
-    "point": 10,
-    "imageUrl": "assets/test_img/qna_test_img.jpg",
+    "title": "Simple Math Question",
+    "content": "I don’t know how to solve..",
+    "point": 30,
+    "imageUrl": "assets/images/qna_img2.png",
     "comments": [
       {
         "author": "사용자3/기계공학부",
@@ -43,10 +39,10 @@
   },
   {
     "id": 3,
-    "title": "도저히 모르겠어요3 ㅠㅠ",
-    "content": "어떻게 해야하나요 이거??!!!!\n이 문제를 풀려면 어떻게 해야 하나요?\n고수님들 도와주세요.",
-    "point": 3,
-    "imageUrl": "assets/test_img/qna_test_img.jpg",
+    "title": "Physics... Velocity...",
+    "content": "How to Calculate Velocity and Speed in this problem?",
+    "point": 20,
+    "imageUrl": "assets/images/qna_img3.png",
     "comments": [
       {
         "author": "김철수/수학과",
@@ -60,10 +56,10 @@
   },
   {
     "id": 4,
-    "title": "ㅠㅠㅠㅠㅠㅠㅠ",
-    "content": "어떻게 해야하나요 이거??!\n정말 답답합니다.\n해결책이 있을까요?\n알려주세요.",
-    "point": 30,
-    "imageUrl": "assets/test_img/qna_test2_img.png",
+    "title": "Which one is Correct?",
+    "content": "It's a Korean question. Which one is right?",
+    "point": 10,
+    "imageUrl": "assets/images/qna_img4.png",
     "comments": [
       {
         "author": "최민수/전산학과",
@@ -77,10 +73,10 @@
   },
   {
     "id": 5,
-    "title": "소공개 화이팅ㅠ",
-    "content": "어떻게 해야하나요 이거??!!\n소프트웨어 공개 시험을 잘 보고 싶어요.\n팁이 있을까요?",
+    "title": "Right grammar?",
+    "content": "I’m not sure...",
     "point": 20,
-    "imageUrl": "assets/test_img/qna_test2_img.png",
+    "imageUrl": "assets/images/qna_img5.png",
     "comments": [
       {
         "author": "이준호/소프트웨어학과",
