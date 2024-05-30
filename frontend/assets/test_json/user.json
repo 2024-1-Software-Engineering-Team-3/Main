@@ -1,7 +1,8 @@
 {
-  "username": "testuser",
+  "username": "Sophia",
   "password": "testpassword",
-  "shares": 10,
-  "reply": 5,
-  "likes": 50
+  "shares": 1,
+  "reply": 123,
+  "likes": 85,
+  "point": 1500
 }
