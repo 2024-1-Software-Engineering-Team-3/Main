@@ -34,7 +34,7 @@ def create_qa_entry():
     if not title or not content or not user_id:
         return jsonify({'Response': "제목, 내용, 유저 아이디가 필요합니다."}), 400
 
-    user = User.query.get(user_id)
+    user = db.session.get(User,user_id)
     if not user:
         return jsonify({'Response': 'User not found'}), 404
 

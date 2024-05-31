@@ -60,7 +60,7 @@ def join_recruitment():
     if not user_id or not recruitment_id:
         return jsonify({"Response": "유저 아이디와 리크루먼트 아이디가 필요합니다."}), 400
 
-    recruitment = RecruitingData.query.get(recruitment_id)
+    recruitment = db.session.get(RecruitingData,recruitment_id)
     if not recruitment:
         return jsonify({"Response": "존재하지 않는 리크루먼트 아이디입니다."}), 404
 
