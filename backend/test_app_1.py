@@ -2,7 +2,6 @@ import unittest
 from app import create_app
 from models import *
 
-
 class APITestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
@@ -16,7 +15,21 @@ class APITestCase(unittest.TestCase):
         with self.app.app_context():
             db.drop_all()
 
-    def test_register_user(self):
+    #-------------------- REGISTER TESTCASE -----------------------------------------------#
+
+    def test_register_user_failed_2(self):
+        response = self.client.post('/Login/signup', json={
+        })
+        self.assertEqual(response.status_code, 400)
+
+    def test_register_user_failed_1(self): #failed case when username is ommited
+        response = self.client.post('/Login/signup', json={
+            'email': 'testuser@example.com',
+            'password': 'password123'
+        })
+        self.assertEqual(response.status_code, 400)
+
+    def test_register_user(self): #normal flow testcase
         response = self.client.post('/Login/signup', json={
             'username': 'testuser',
             'email': 'testuser@example.com',
@@ -24,6 +37,23 @@ class APITestCase(unittest.TestCase):
         })
         self.assertEqual(response.status_code, 201)
         self.assertIn('회원가입이 성공적으로 완료되었습니다.', response.get_json()['Response'])
+
+    #----------------------------------------------------------------------------------------#
+
+    #-------------------- LOGIN TESTCASE -----------------------------------------------#
+
+    def test_login_user_failed_2(self):
+        self.test_register_user()
+        response = self.client.post('/Login/login', json={
+        })
+        self.assertEqual(response.status_code, 401)
+        
+    def test_login_user_failed_1(self):
+        self.test_register_user()
+        response = self.client.post('/Login/login', json={
+            'password': 'password123'
+        })
+        self.assertEqual(response.status_code, 401)
 
     def test_login_user(self):
         self.test_register_user()
@@ -37,7 +67,30 @@ class APITestCase(unittest.TestCase):
                       response.get_json()['user_info']['email'])
         self.assertIn('testuser', response.get_json()['user_info']['username'])
 
-    def test_create_recruiting(self):
+    #----------------------------------------------------------------------------------------#
+
+
+    #-------------------- RECRUITING TESTCASE -----------------------------------------------#
+
+    def test_recruiting_create_failed_2(self):
+        self.test_login_user()
+        response = self.client.post('/Recruitment/upload', json={
+        })
+        self.assertEqual(response.status_code, 400)
+    
+    def test_recruiting_create_failed_1(self):
+        self.test_login_user()
+        response = self.client.post('/Recruitment/upload', json={
+            'title': 'New Study Group',
+            'description': 'A new study group for advanced topics.',
+            'membercount': 10,
+            'duration': '3 months',
+            'type': 'study'
+        })
+        self.assertEqual(response.status_code, 201)
+
+
+    def test_recruiting_create(self):
         self.test_login_user()
         response = self.client.post('/Recruitment/upload', json={
             'title': 'New Study Group',
@@ -51,8 +104,16 @@ class APITestCase(unittest.TestCase):
         self.assertIn('Recruting data가 성공적으로 생성되었습니다.',
                       response.get_json()['Response'])
 
-    def test_join_recruitment(self):
-        self.test_create_recruiting()
+    def test_recruiting_join_failed_1(self):
+        self.test_recruiting_create()
+        response = self.client.post('/Recruitment/join', json={
+            'user_id': -1,
+            'recruitment_id': 1
+        })
+        self.assertEqual(response.status_code, 201)
+    
+    def test_recruiting_join(self):
+        self.test_recruiting_create()
         response = self.client.post('/Recruitment/join', json={
             'user_id': 1,
             'recruitment_id': 1
@@ -60,7 +121,19 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn("성공적으로 리크루먼트에 가입했습니다.", response.get_json()['Response'])
 
-    def test_create_qa(self):
+    #----------------------------------------------------------------------------------------#
+
+    def test_qa_create_failed_1(self):
+        self.test_login_user()
+        response = self.client.post('/QA/upload', json={
+            "title": "new title",
+            "content": "This is a content",
+            "user_id": 1,
+            "answered": False
+        })
+        self.assertEqual(response.status_code, 201)
+    
+    def test_qa_create(self):
         self.test_login_user()
         response = self.client.post('/QA/upload', json={
             "title": "new title",
@@ -81,9 +154,9 @@ class APITestCase(unittest.TestCase):
             self.assertEqual(qa_entry.user_id, 1)
             self.assertEqual(qa_entry.point, 10)
             self.assertFalse(qa_entry.answered)
-
-    def test_get_qa(self):
-        self.test_create_qa()
+    
+    def test_qa_get(self):
+        self.test_qa_create()
         response = self.client.get('/QA/home')
         self.assertEqual(response.status_code, 200)
         data = response.get_json()
@@ -98,4 +171,5 @@ class APITestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    print("-"*70)
+    unittest.main(argv=['first-arg-is-ignored'], verbosity=2)
