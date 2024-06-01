@@ -48,5 +48,37 @@ class QAEntry(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     point = db.Column(db.Integer, nullable=False, default=0)
     answered = db.Column(db.Boolean, nullable=False, default=False)
+    fileurl = db.Column(db.String(255), nullable=True)
 
     user = db.relationship('User', backref=db.backref('qa_entries', lazy=True))
+
+
+class Answer(db.Model):
+    __tablename__ = 'answers'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    description = db.Column(db.Text, nullable=False)
+    date_created = db.Column(
+        db.DateTime, nullable=False, default=datetime.now())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey(
+        'qa_entries.id'), nullable=False)
+
+    user = db.relationship('User', backref=db.backref('answers', lazy=True))
+    question = db.relationship(
+        'QAEntry', backref=db.backref('answers', lazy=True))
+
+
+class Sharing(db.Model):
+    __tablename__ = 'sharing'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date_created = db.Column(
+        db.DateTime, nullable=False, default=datetime.now())
+    point = db.Column(db.Integer, nullable=False, default=0)
+    fileurl = db.Column(db.String(255), nullable=True)
+    recommend = db.Column(db.Integer, nullable=False, default=0)
+    downloadcount = db.Column(db.Integer, nullable=False, default=0)
+
+    user = db.relationship('User', backref=db.backref('sharing', lazy=True))

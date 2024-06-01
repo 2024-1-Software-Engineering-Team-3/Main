@@ -2,6 +2,7 @@ import unittest
 from app import create_app
 from models import *
 
+
 class APITestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
@@ -15,21 +16,22 @@ class APITestCase(unittest.TestCase):
         with self.app.app_context():
             db.drop_all()
 
-    #-------------------- REGISTER TESTCASE -----------------------------------------------#
+    # -------------------- REGISTER TESTCASE -----------------------------------------------#
 
     def test_register_user_failed_2(self):
         response = self.client.post('/Login/signup', json={
         })
         self.assertEqual(response.status_code, 400)
 
-    def test_register_user_failed_1(self): #failed case when username is ommited
+    # failed case when username is ommited
+    def test_register_user_failed_1(self):
         response = self.client.post('/Login/signup', json={
             'email': 'testuser@example.com',
             'password': 'password123'
         })
         self.assertEqual(response.status_code, 400)
 
-    def test_register_user(self): #normal flow testcase
+    def test_register_user(self):  # normal flow testcase
         response = self.client.post('/Login/signup', json={
             'username': 'testuser',
             'email': 'testuser@example.com',
@@ -38,16 +40,16 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn('회원가입이 성공적으로 완료되었습니다.', response.get_json()['Response'])
 
-    #----------------------------------------------------------------------------------------#
+    # ----------------------------------------------------------------------------------------#
 
-    #-------------------- LOGIN TESTCASE -----------------------------------------------#
+    # -------------------- LOGIN TESTCASE -----------------------------------------------#
 
     def test_login_user_failed_2(self):
         self.test_register_user()
         response = self.client.post('/Login/login', json={
         })
         self.assertEqual(response.status_code, 401)
-        
+
     def test_login_user_failed_1(self):
         self.test_register_user()
         response = self.client.post('/Login/login', json={
@@ -67,17 +69,16 @@ class APITestCase(unittest.TestCase):
                       response.get_json()['user_info']['email'])
         self.assertIn('testuser', response.get_json()['user_info']['username'])
 
-    #----------------------------------------------------------------------------------------#
+    # ----------------------------------------------------------------------------------------#
 
-
-    #-------------------- RECRUITING TESTCASE -----------------------------------------------#
+    # -------------------- RECRUITING TESTCASE -----------------------------------------------#
 
     def test_recruiting_create_failed_2(self):
         self.test_login_user()
         response = self.client.post('/Recruitment/upload', json={
         })
         self.assertEqual(response.status_code, 400)
-    
+
     def test_recruiting_create_failed_1(self):
         self.test_login_user()
         response = self.client.post('/Recruitment/upload', json={
@@ -88,7 +89,6 @@ class APITestCase(unittest.TestCase):
             'type': 'study'
         })
         self.assertEqual(response.status_code, 201)
-
 
     def test_recruiting_create(self):
         self.test_login_user()
@@ -111,7 +111,7 @@ class APITestCase(unittest.TestCase):
             'recruitment_id': 1
         })
         self.assertEqual(response.status_code, 201)
-    
+
     def test_recruiting_join(self):
         self.test_recruiting_create()
         response = self.client.post('/Recruitment/join', json={
@@ -121,7 +121,7 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn("성공적으로 리크루먼트에 가입했습니다.", response.get_json()['Response'])
 
-    #----------------------------------------------------------------------------------------#
+    # ----------------------------------------------------------------------------------------#
 
     def test_qa_create_failed_1(self):
         self.test_login_user()
@@ -132,7 +132,7 @@ class APITestCase(unittest.TestCase):
             "answered": False
         })
         self.assertEqual(response.status_code, 201)
-    
+
     def test_qa_create(self):
         self.test_login_user()
         response = self.client.post('/QA/upload', json={
@@ -140,7 +140,7 @@ class APITestCase(unittest.TestCase):
             "content": "This is a content",
             "user_id": 1,
             "point": 10,
-            "answered": False
+            "fileurl": 'http://example.com/image.jpg'
         })
         self.assertEqual(response.status_code, 201)
         data = response.get_json()
@@ -153,8 +153,8 @@ class APITestCase(unittest.TestCase):
             self.assertEqual(qa_entry.content, 'This is a content')
             self.assertEqual(qa_entry.user_id, 1)
             self.assertEqual(qa_entry.point, 10)
-            self.assertFalse(qa_entry.answered)
-    
+            self.assertEqual(qa_entry.fileurl, 'http://example.com/image.jpg')
+
     def test_qa_get(self):
         self.test_qa_create()
         response = self.client.get('/QA/home')
@@ -169,7 +169,64 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(data['Questions'][0]['point'], 10)
         self.assertEqual(data['Questions'][0]['answered'], False)
 
+    def test_sharing_create(self):
+        self.test_login_user()
+        response = self.client.post('/Sharing/upload', json={
+            "title": "How to use Python",
+            "description": "A comprehensive guide on how to use Python for beginners.",
+            "user_id": 1,
+            'point': 4,
+            'fileurl': 'http://example.com/file.txt'
+        })
+        self.assertEqual(response.status_code, 201)
+        data = response.get_json()
+        self.assertEqual(data['Response'], 'Success')
+
+        with self.app.app_context():
+            entry = Sharing.query.filter_by(id=data['id']).first()
+            self.assertIsNotNone(entry)
+            self.assertEqual(entry.title, 'How to use Python')
+            self.assertEqual(
+                entry.description, 'A comprehensive guide on how to use Python for beginners.')
+            self.assertEqual(entry.user_id, 1)
+            self.assertEqual(entry.point, 4)
+            self.assertEqual(entry.fileurl, 'http://example.com/file.txt')
+
+    def test_get_sharing(self):
+        self.test_sharing_create()
+        response = self.client.post('/Sharing/home', json={
+            'Username': 'testuser'
+        })
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(data['Response'], 'Success')
+        self.assertEqual(len(data['Sharing']), 1)
+        self.assertEqual(data['Sharing'][0]['title'], 'How to use Python')
+        self.assertEqual(data['Sharing'][0]['userid'], 1)
+        self.assertEqual(data['Sharing'][0]['username'], 'testuser')
+        self.assertEqual(data['Sharing'][0]['fileurl'],
+                         'http://example.com/file.txt')
+
+    def test_answer_qa(self):
+        self.test_qa_create()
+        response = self.client.post('/QA/answer', json={
+            'description': 'Practice coding everyday',
+            'user_id': 1,
+            'question_id': 1
+        })
+        self.assertEqual(response.status_code, 201)
+        data = response.get_json()
+        self.assertEqual(data['Response'], 'Success')
+
+        with self.app.app_context():
+            answer = Answer.query.filter_by(id=data['id']).first()
+            self.assertIsNotNone(answer)
+            self.assertEqual(answer.description, 'Practice coding everyday')
+            self.assertEqual(answer.user_id, 1)
+            self.assertEqual(answer.question_id, 1)
+
 
 if __name__ == '__main__':
     print("-"*70)
+    # unittest.main(argv=['first-arg-is-ignored'], verbosity=2)
     unittest.main(argv=['first-arg-is-ignored'], verbosity=2)
